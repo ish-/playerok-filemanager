@@ -4,6 +4,7 @@
   "main": "index.js",
   "scripts": {
     "devStart": "nodemon server.js",
+    "debug": "nodemon --inspect server.js",
     "start": "node server.js",
     "genDocs": "node swagger.js"
   },

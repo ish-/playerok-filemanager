@@ -1,5 +1,5 @@
 const express = require("express");
-const connectDB = require("./app/config/db.config");
+// const connectDB = require("./app/config/db.config");
 const cors = require("cors");
 const fileSystemRoutes = require("./app/routes/fileSystem.routes");
 const errorHandler = require("./app/middlewares/errorHandler.middleware");
@@ -12,7 +12,7 @@ dotenv.config();
 const app = express();
 
 // Database connection
-connectDB();
+// connectDB();
 
 // CORS setup
 app.use(cors({ origin: process.env.CLIENT_URI }));
