@@ -17,9 +17,9 @@ function App() {
   const isMountRef = useRef(false);
 
   // Get Files
-  const getFiles = async () => {
+  const getFiles = async (refreshDB = false) => {
     setIsLoading(true);
-    const response = await getAllFilesAPI();
+    const response = await getAllFilesAPI(refreshDB);
     setFiles(response.data);
     setIsLoading(false);
   };
@@ -101,7 +101,7 @@ function App() {
 
   // Refresh Files
   const handleRefresh = () => {
-    getFiles();
+    getFiles(true);
   };
   //
 
@@ -149,7 +149,7 @@ function App() {
           enableFilePreview
           maxFileSize={10485760}
           filePreviewPath={import.meta.env.VITE_API_FILES_BASE_URL}
-          acceptedFileTypes=".txt, .png, .jpg, .jpeg, .pdf, .doc, .docx, .exe"
+          acceptedFileTypes="*"
           height="100%"
           width="100%"
           initialPath=""

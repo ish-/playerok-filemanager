@@ -22,7 +22,7 @@ app.add_middleware(
 )
 
 # Base upload directory
-BASE_DIR = os.path.curdir
+BASE_DIR = Path(os.path.curdir)
 if not os.path.exists(BASE_DIR):
     os.makedirs(BASE_DIR)
 
@@ -76,7 +76,7 @@ def list_items(base_path: str) -> List[dict]:
             relative_path = os.path.relpath(full_path, BASE_DIR)
 
             # Add '/' at the start of the path
-            formatted_path = f"/{relative_path.replace(os.path.sep, '/')}"  
+            formatted_path = f"/{relative_path.replace(os.path.sep, '/')}"
 
             # Generate file preview URL if it's a file
             preview_url = None
@@ -197,7 +197,7 @@ def delete_item(paths: List[str]):
 
 
 # ⬇️ Download File(s) or Folder(s)
-@app.get("/download//{path:path}")
+@app.get("/download/{path:path}")
 def download_file(path: str):
     target = os.path.join(BASE_DIR, path.lstrip("/"))
     if not os.path.exists(target):

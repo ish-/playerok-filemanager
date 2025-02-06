@@ -1,0 +1,6 @@
+fastapi
+pydantic
+fastapi
+uvicorn
+pathlib
+python-multipart

@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 
+const { updateFullTreeInDB } = require("../services/fs");
+const FileSystem = require("../models/FileSystem.model");
+
 dotenv.config();
 
 const connectDB = async () => {
@@ -13,4 +16,10 @@ const connectDB = async () => {
   }
 };
 
-module.exports = connectDB;
+const refreshDB = async () => {
+  await FileSystem.collection.drop(); console.log('FileSystem.collection.drop()');
+  const tree = await updateFullTreeInDB();
+  console.log('TREE', tree);
+};
+
+module.exports = {connectDB, refreshDB};
