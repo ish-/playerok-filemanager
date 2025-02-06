@@ -1,3 +1,4 @@
+const path = require("path");
 const express = require("express");
 const {connectDB, refreshDB} = require("./app/config/db.config");
 const cors = require("cors");
@@ -10,6 +11,7 @@ const swaggerDocument = require("./swagger-output.json");
 dotenv.config();
 
 const app = express();
+const FRONTEND_ROOT = path.resolve(process.env.FRONTEND_ROOT);
 
 process.on("unhandledRejection", (err) => {
   console.error(err);
@@ -23,9 +25,6 @@ async function init () {
   // CORS setup
   app.use(cors({ origin: process.env.CLIENT_URI }));
 
-  // Static files serving
-  app.use(express.static("public/uploads"));
-
   // Middlewares to parse URL-encoded body & JSON
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
@@ -35,6 +34,12 @@ async function init () {
 
   // Swagger documentation
   app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+  // Static files serving
+  app.use(express.static(FRONTEND_ROOT));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(FRONTEND_ROOT, 'index.html'));
+  });
 
   // Error handling middleware
   app.use(errorHandler);
