@@ -2,6 +2,7 @@ const FileSystem = require("../models/FileSystem.model");
 const fs = require("fs");
 const mongoose = require("mongoose");
 const path = require("path");
+const { FS_ROOT } = require("../services/fs");
 
 const recursiveMove = async (sourceItem, destinationFolder) => {
   const moveItem = new FileSystem({
@@ -32,7 +33,7 @@ const moveItem = async (req, res) => {
       } */
   /*  #swagger.responses[200] = {
         schema: {message: "Item(s) moved successfully!"}
-      }  
+      }
   */
 
   const { sourceIds, destinationId } = req.body;
@@ -53,10 +54,10 @@ const moveItem = async (req, res) => {
     }
 
     const movePromises = sourceItems.map(async (sourceItem) => {
-      const srcFullPath = path.join(__dirname, "../../public/uploads", sourceItem.path);
+      const srcFullPath = path.join(FS_ROOT, sourceItem.path);
 
       if (isRootDestination) {
-        const destFullPath = path.join(__dirname, "../../public/uploads", sourceItem.name);
+        const destFullPath = path.join(FS_ROOT, sourceItem.name);
         await fs.promises.cp(srcFullPath, destFullPath, { recursive: true });
         await fs.promises.rm(srcFullPath, { recursive: true });
 

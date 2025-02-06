@@ -37,7 +37,7 @@ async function getFullTree(rootPath = FS_ROOT, dirPath = '', parentId = _fileId,
 }
 
 const FileSystem = require("../models/FileSystem.model");
-async function updateFullTreeInDB(rootPath = FS_ROOT, dirPath = '', parentId = null, listing = []) {
+async function updateFileSystemInDB(rootPath = FS_ROOT, dirPath = '', parentId = null, listing = []) {
   const items = fs.readdirSync(path.join(rootPath, dirPath));
 
   const savePromises = items.map(async (item) => {
@@ -55,18 +55,18 @@ async function updateFullTreeInDB(rootPath = FS_ROOT, dirPath = '', parentId = n
     } );
 
     await dbItem.save().catch(err => console.error({err}));
-    console.log(dbItem);
     if (!dbItem._id)
       throw 'No id: ' + dbItem.path;
 
     listing.push(dbItem);
 
     if (isDirectory) {
-      await updateFullTreeInDB(rootPath, relPath, dbItem._id, listing);
+      await updateFileSystemInDB(rootPath, relPath, dbItem._id, listing);
     }
   });
 
   await Promise.all(savePromises);
+  console.log('FileSystem tree updated.');
 
   return listing;
 }
@@ -75,5 +75,5 @@ async function updateFullTreeInDB(rootPath = FS_ROOT, dirPath = '', parentId = n
 module.exports = {
   FS_ROOT,
   getFullTree,
-  updateFullTreeInDB,
+  updateFileSystemInDB,
 };

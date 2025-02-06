@@ -11,6 +11,10 @@ dotenv.config();
 
 const app = express();
 
+process.on("unhandledRejection", (err) => {
+  console.error(err);
+});
+
 // Database connection
 async function init () {
   await connectDB();
