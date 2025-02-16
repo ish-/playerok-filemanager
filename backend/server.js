@@ -12,6 +12,7 @@ dotenv.config();
 
 const app = express();
 const FRONTEND_ROOT = path.resolve(process.env.FRONTEND_ROOT);
+const FS_ROOT = path.resolve(process.env.FS_ROOT);
 
 process.on("unhandledRejection", (err) => {
   console.error(err);
@@ -37,9 +38,11 @@ async function init () {
 
   // Static files serving
   app.use(express.static(FRONTEND_ROOT));
+  app.use('/preview', express.static(FS_ROOT));
   app.get('*', (req, res) => {
     res.sendFile(path.join(FRONTEND_ROOT, 'index.html'));
   });
+
 
   // Error handling middleware
   app.use(errorHandler);
