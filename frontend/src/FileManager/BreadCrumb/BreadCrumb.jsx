@@ -4,6 +4,8 @@ import { useFileNavigation } from "../../contexts/FileNavigationContext";
 import { useDetectOutsideClick } from "../../hooks/useDetectOutsideClick";
 import "./BreadCrumb.scss";
 
+import { useTranslation } from 'react-i18next';
+
 const BreadCrumb = () => {
   const [folders, setFolders] = useState([]);
   const [hiddenFolders, setHiddenFolders] = useState([]);
@@ -18,12 +20,14 @@ const BreadCrumb = () => {
     setShowHiddenFolders(false);
   });
 
+  const { t, i18n } = useTranslation();
+
   useEffect(() => {
     setFolders(() => {
       let path = "";
       return currentPath?.split("/").map((item) => {
         return {
-          name: item || "Home",
+          name: item || t("fs.home"),
           path: item === "" ? item : (path += `/${item}`),
         };
       });

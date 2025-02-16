@@ -1,0 +1,10 @@
+{
+  "fs.newFolder": "New Folder",
+  "fs.uploadFile": "Upload File",
+  "fs.home": "HomeHome",
+  "fs.copy": "Copy",
+  "fs.cut": "Cut",
+  "fs.rename": "Rename",
+  "fs.download": "Download",
+  "fs.delete": "Delete"
+}

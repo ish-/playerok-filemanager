@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import legacy from "@vitejs/plugin-legacy";
+import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -10,6 +11,14 @@ export default defineConfig({
     legacy({
       targets: ['defaults', 'not IE 11'], // Adjust for your needs
     }),
+    viteStaticCopy({
+      targets: [
+        {
+          src: 'src/langs',  // Path to the source files
+          dest: 'assets'  // Destination folder
+        }
+      ]
+    })
   ],
   build: {
     target: 'es2015',

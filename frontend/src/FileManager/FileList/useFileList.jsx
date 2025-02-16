@@ -12,6 +12,8 @@ import { useFileNavigation } from "../../contexts/FileNavigationContext";
 import { duplicateNameHandler } from "../../utils/duplicateNameHandler";
 import { validateApiCallback } from "../../utils/validateApiCallback";
 
+import { useTranslation } from 'react-i18next';
+
 const useFileList = (onRefresh, enableFilePreview, triggerAction) => {
   const [selectedFileIndexes, setSelectedFileIndexes] = useState([]);
   const [visible, setVisible] = useState(false);
@@ -132,6 +134,8 @@ const useFileList = (onRefresh, enableFilePreview, triggerAction) => {
       onClick: handleselectAllFiles,
     },
   ];
+
+  const { t, i18n } = useTranslation();
 
   const selecCtxItems = [
     {

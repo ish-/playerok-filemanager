@@ -1,3 +1,4 @@
+import "../i18n.js";
 import Loader from "../components/Loader/Loader";
 import Toolbar from "./Toolbar/Toolbar";
 import NavigationPane from "./NavigationPane/NavigationPane";
