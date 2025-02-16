@@ -20,7 +20,7 @@ const BreadCrumb = () => {
     setShowHiddenFolders(false);
   });
 
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   useEffect(() => {
     setFolders(() => {

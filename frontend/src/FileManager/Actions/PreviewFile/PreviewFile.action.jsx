@@ -9,10 +9,12 @@ import { useFileIcons } from "../../../hooks/useFileIcons";
 import { FaRegFileAlt } from "react-icons/fa";
 import "./PreviewFile.action.scss";
 
-const imageExtensions = ["jpg", "jpeg", "png"];
-const videoExtensions = ["mp4", "mov", "avi"];
-const audioExtensions = ["mp3", "wav", "m4a"];
-const iFrameExtensions = ["txt", "pdf"];
+import { useTranslation } from 'react-i18next';
+
+const imageExtensions = ["jpg", "jpeg", "png", "gif", "bmp", "webp"];
+const videoExtensions = ["mp4", "mov", "avi", "mkv"];
+const audioExtensions = ["mp3", "wav", "m4a", "aac"];
+const iFrameExtensions = ["txt", "pdf", "json", "xml", "html", "md"];
 
 const PreviewFileAction = ({ filePreviewPath, filePreviewComponent }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -21,6 +23,7 @@ const PreviewFileAction = ({ filePreviewPath, filePreviewComponent }) => {
   const fileIcons = useFileIcons(73);
   const extension = getFileExtension(selectedFiles[0].name)?.toLowerCase();
   const filePath = `${filePreviewPath}${selectedFiles[0].path}`;
+  const { t, i18n } = useTranslation();
 
   // Custom file preview component
   const customPreview = useMemo(
@@ -57,7 +60,7 @@ const PreviewFileAction = ({ filePreviewPath, filePreviewComponent }) => {
         ].includes(extension) && (
           <div className="preview-error">
             <span className="error-icon">{fileIcons[extension] ?? <FaRegFileAlt size={73} />}</span>
-            <span className="error-msg">Sorry! Preview is not available for this file.</span>
+            <span className="error-msg">{ t("fs.previewUnavailable") }</span>
             <div className="file-info">
               <span className="file-name">{selectedFiles[0].name}</span>
               {selectedFiles[0].size && <span>-</span>}
@@ -66,7 +69,7 @@ const PreviewFileAction = ({ filePreviewPath, filePreviewComponent }) => {
             <Button onClick={handleDownload} padding="0.45rem .9rem">
               <div className="download-btn">
                 <MdOutlineFileDownload size={18} />
-                <span>Download</span>
+                <span>{ t("fs.download") }</span>
               </div>
             </Button>
           </div>

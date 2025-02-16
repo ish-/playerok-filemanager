@@ -6,6 +6,8 @@ import PreviewFileAction from "./PreviewFile/PreviewFile.action";
 import { useSelection } from "../../contexts/SelectionContext";
 import { useShortcutHandler } from "../../hooks/useShortcutHandler";
 
+import { useTranslation } from 'react-i18next';
+
 const Actions = ({
   fileUploadConfig,
   onFileUploading,
@@ -21,12 +23,14 @@ const Actions = ({
   const [activeAction, setActiveAction] = useState(null);
   const { selectedFiles } = useSelection();
 
+  const { t, i18n } = useTranslation();
+
   // Triggers all the keyboard shortcuts based actions
   useShortcutHandler(triggerAction, onRefresh);
 
   const actionTypes = {
     uploadFile: {
-      title: "Upload",
+      title: t("fs.upload"),
       component: (
         <UploadFileAction
           fileUploadConfig={fileUploadConfig}
@@ -39,12 +43,12 @@ const Actions = ({
       width: "35%",
     },
     delete: {
-      title: "Delete",
+      title: t("fs.delete"),
       component: <DeleteAction triggerAction={triggerAction} onDelete={onDelete} />,
       width: "25%",
     },
     previewFile: {
-      title: "Preview",
+      title: t("fs.preview"),
       component: (
         <PreviewFileAction
           filePreviewPath={filePreviewPath}
@@ -59,7 +63,7 @@ const Actions = ({
     if (triggerAction.isActive) {
       const actionType = triggerAction.actionType;
       if (actionType === "previewFile") {
-        actionTypes[actionType].title = selectedFiles?.name ?? "Preview";
+        actionTypes[actionType].title = selectedFiles?.name ?? t("fs.preview");
       }
       setActiveAction(actionTypes[actionType]);
     } else {

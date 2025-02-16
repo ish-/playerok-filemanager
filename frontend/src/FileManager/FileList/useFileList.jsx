@@ -26,6 +26,7 @@ const useFileList = (onRefresh, enableFilePreview, triggerAction) => {
   const { currentPath, setCurrentPath, currentPathFiles, setCurrentPathFiles } =
     useFileNavigation();
   const { activeLayout, setActiveLayout } = useLayout();
+  const { t, i18n } = useTranslation();
 
   // Context Menu
   const handleFileOpen = () => {
@@ -87,12 +88,12 @@ const useFileList = (onRefresh, enableFilePreview, triggerAction) => {
 
   const emptySelecCtxItems = [
     {
-      title: "View",
+      title: t("fs.view"),
       icon: activeLayout === "grid" ? <BsGrid size={18} /> : <FaListUl size={18} />,
       onClick: () => {},
       children: [
         {
-          title: "Grid",
+          title: t("fs.grid"),
           icon: <BsGrid size={18} />,
           selected: activeLayout === "grid",
           onClick: () => {
@@ -101,7 +102,7 @@ const useFileList = (onRefresh, enableFilePreview, triggerAction) => {
           },
         },
         {
-          title: "List",
+          title: t("fs.list"),
           icon: <FaListUl size={18} />,
           selected: activeLayout === "list",
           onClick: () => {
@@ -112,51 +113,49 @@ const useFileList = (onRefresh, enableFilePreview, triggerAction) => {
       ],
     },
     {
-      title: "Refresh",
+      title: t("fs.refresh"),
       icon: <FiRefreshCw size={18} />,
       onClick: handleRefresh,
       divider: true,
     },
     {
-      title: "New folder",
+      title: t("fs.newFolder"),
       icon: <BsFolderPlus size={18} />,
       onClick: handleCreateNewFolder,
     },
     {
-      title: "Upload",
+      title: t("fs.upload"),
       icon: <MdOutlineFileUpload size={18} />,
       onClick: handleUpload,
       divider: true,
     },
     {
-      title: "Select all",
+      title: t("fs.selectAll"),
       icon: <BiSelectMultiple size={18} />,
       onClick: handleselectAllFiles,
     },
   ];
 
-  const { t, i18n } = useTranslation();
-
   const selecCtxItems = [
     {
-      title: "Open",
+      title: t("fs.open"),
       icon: lastSelectedFile?.isDirectory ? <PiFolderOpen size={20} /> : <FaRegFile size={16} />,
       onClick: handleFileOpen,
       divider: true,
     },
     {
-      title: "Cut",
+      title: t("fs.cut"),
       icon: <BsScissors size={19} />,
       onClick: () => handleMoveOrCopyItems(true),
     },
     {
-      title: "Copy",
+      title: t("fs.copy"),
       icon: <BsCopy strokeWidth={0.1} size={17} />,
       onClick: () => handleMoveOrCopyItems(false),
       divider: !lastSelectedFile?.isDirectory,
     },
     {
-      title: "Paste",
+      title: t("fs.paste"),
       icon: <FaRegPaste size={18} />,
       onClick: handleFilePasting,
       className: `${clipBoard ? "" : "disable-paste"}`,
@@ -164,19 +163,19 @@ const useFileList = (onRefresh, enableFilePreview, triggerAction) => {
       divider: true,
     },
     {
-      title: "Rename",
+      title: t("fs.rename"),
       icon: <BiRename size={19} />,
       onClick: handleRenaming,
       hidden: selectedFiles.length > 1,
     },
     {
-      title: "Download",
+      title: t("fs.download"),
       icon: <MdOutlineFileDownload size={18} />,
       onClick: handleDownloadItems,
       hidden: lastSelectedFile?.isDirectory,
     },
     {
-      title: "Delete",
+      title: t("fs.delete"),
       icon: <MdOutlineDelete size={19} />,
       onClick: handleDelete,
     },
