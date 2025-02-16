@@ -3,16 +3,7 @@ const fs = require("fs");
 const mongoose = require("mongoose");
 const path = require("path");
 const { FS_ROOT } = require('../services/fs');
-
-const deleteRecursive = async (item) => {
-  const children = await FileSystem.find({ parentId: item._id });
-
-  for (const child of children) {
-    await deleteRecursive(child);
-  }
-
-  await FileSystem.findByIdAndDelete(item._id);
-};
+const { deleteRecursiveFromDB, deleteFile } = require('./common.js');
 
 const deleteItem = async (req, res) => {
   // #swagger.summary = 'Deletes file/folder(s).'
@@ -44,12 +35,7 @@ const deleteItem = async (req, res) => {
       return res.status(404).json({ error: "One or more of the provided ids do not exist." });
     }
 
-    const deletePromises = items.map(async (item) => {
-      const itemPath = path.join(FS_ROOT, item.path);
-      await fs.promises.rm(itemPath, { recursive: true });
-
-      await deleteRecursive(item);
-    });
+    const deletePromises = items.map(deleteFile);
 
     await Promise.all(deletePromises);
 

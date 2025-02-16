@@ -86,12 +86,26 @@ function App() {
   const handlePaste = async (copiedItems, destinationFolder, operationType) => {
     setIsLoading(true);
     const copiedItemIds = copiedItems.map((item) => item._id);
-    if (operationType === "copy") {
-      const response = await copyItemAPI(copiedItemIds, destinationFolder?._id);
-    } else {
-      const response = await moveItemAPI(copiedItemIds, destinationFolder?._id);
+    let pasteAction = operationType === "copy" ? copyItemAPI : moveItemAPI;
+    try {
+      await pasteAction(copiedItemIds, destinationFolder?._id);
+      await getFiles();
     }
-    await getFiles();
+    catch (err) {
+      if (err?.name === "AxiosError") {
+        if (err.response?.data?.type === "FILES_EXIST") {
+          if (window.confirm(`${ err.response.data.error }. Do you want to overwrite them?`)) {
+            await pasteAction(copiedItemIds, destinationFolder?._id, true);
+            await getFiles();
+          }
+        }
+        else
+          alert(err.response.data.error);
+
+      } else
+        console.error(err);
+      setIsLoading(false);
+    }
   };
   //
 

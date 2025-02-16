@@ -3,6 +3,7 @@ const fs = require("fs");
 const mongoose = require("mongoose");
 const path = require("path");
 const { FS_ROOT } = require("../services/fs");
+const { deleteFile } = require("./common.js");
 
 const recursiveCopy = async (sourceItem, destinationFolder) => {
   const copyItem = new FileSystem({
@@ -37,7 +38,7 @@ const copyItem = async (req, res) => {
       }
   */
 
-  const { sourceIds, destinationId } = req.body;
+  const { sourceIds, destinationId, overwrite } = req.body;
   const isRootDestination = !destinationId;
 
   if (!sourceIds || !Array.isArray(sourceIds) || sourceIds.length === 0) {
@@ -50,9 +51,39 @@ const copyItem = async (req, res) => {
       return res.status(400).json({ error: "One or more of the provided sourceIds are invalid." });
     }
 
+    let destinationFolder = { path: '' };
+    if (!isRootDestination) {
+      destinationFolder = await FileSystem.findById(destinationId);
+      console.log({destinationFolder});
+      if (!destinationFolder)
+        throw new Error(`Wrong destinationId: ${ destinationId }`);
+    }
+
     const sourceItems = await FileSystem.find({ _id: { $in: validIds } });
     if (sourceItems.length !== validIds.length) {
       return res.status(404).json({ error: "One or more of the provided sourceIds do not exist." });
+    }
+
+    // CHECK FOR EXISTENCE
+    const nextPathes = sourceItems.map(d => destinationFolder.path + '/' + d.name);
+    // console.log({nextPathes});
+    const existing = await FileSystem.find({ path: {
+      $in: nextPathes,
+    } });
+    // console.log({existing});
+    // console.log({all: (await FileSystem.find()).map(d => d.path) });
+    if (!overwrite && existing.length)
+      return res.status(409).json({
+        error: `Pathes already exists: ${ existing.map(d => d.path) }`,
+        type: 'FILES_EXIST',
+      });
+
+    if (existing.length) {
+      try {
+        await Promise.all(existing.map(deleteFile));
+      } catch (error) {
+        return res.status(500).json({ error });
+      }
     }
 
     const copyPromises = sourceItems.map(async (sourceItem) => {
@@ -63,10 +94,6 @@ const copyItem = async (req, res) => {
         await fs.promises.cp(srcFullPath, destFullPath, { recursive: true });
         await recursiveCopy(sourceItem, null); // Destination Folder -> Root Folder
       } else {
-        const destinationFolder = await FileSystem.findById(destinationId);
-        if (!destinationFolder || !destinationFolder.isDirectory) {
-          throw new Error("Invalid destinationId!");
-        }
         const destFullPath = path.join(
           __dirname,
           "../../public/uploads",
