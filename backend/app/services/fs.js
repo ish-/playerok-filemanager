@@ -66,7 +66,7 @@ async function updateFileSystemInDB(rootPath = FS_ROOT, dirPath = '', parentId =
   });
 
   await Promise.all(savePromises);
-  console.log('FileSystem tree updated.');
+  // console.log('FileSystem tree updated.');
 
   return listing;
 }

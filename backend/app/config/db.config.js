@@ -18,7 +18,7 @@ const connectDB = async () => {
 
 const refreshDB = async () => {
   await FileSystem.collection.drop();
-  console.log('FileSystem dropped.');
+  // console.log('FileSystem dropped.');
 
   const tree = await updateFileSystemInDB();
 };
