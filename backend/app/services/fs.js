@@ -2,56 +2,32 @@ const fs = require('fs');
 const path = require('path');
 const mime = require('mime-types');
 const dotenv = require("dotenv");
+const ignore = require("ignore");
+const FileSystem = require("../models/FileSystem.model");
 
 dotenv.config();
+const indexIgnore = ignore().add(process.env.INDEX_IGNORE.split(','));
 
 const FS_ROOT = path.resolve(process.env.FS_ROOT);
-let _fileId = 0;
 
-async function getFullTree(rootPath = FS_ROOT, dirPath = '', parentId = _fileId, listing = []) {
-  const items = fs.readdirSync(path.join(rootPath, dirPath));
-
-  for (const item of items) {
-    const relPath = path.join(dirPath, item);
-    const stats = fs.statSync(path.join(rootPath, relPath));
-
-    const isDirectory = stats.isDirectory();
-    const itemData = {
-      name: item,
-      isDirectory,
-      path: '/' + relPath,
-      parentId: parentId,
-      size: isDirectory ? null : stats.size,
-      mimeType: isDirectory ? null : mime.lookup(item),
-    };
-
-    listing.push(itemData);
-
-    if (isDirectory) {
-      const children = await getFullTree(rootPath, relPath, _fileId++, listing);
-      // ...
-    }
-  }
-
-  return listing;
-}
-
-const FileSystem = require("../models/FileSystem.model");
 async function updateFileSystemInDB(rootPath = FS_ROOT, dirPath = '', parentId = null, listing = []) {
-  const items = fs.readdirSync(path.join(rootPath, dirPath));
+  const fileNames = fs.readdirSync(path.join(rootPath, dirPath));
 
-  const savePromises = items.map(async (item) => {
-    const relPath = path.join(dirPath, item);
+  const savePromises = fileNames.map(async (fileName) => {
+    if (indexIgnore.ignores(fileName))
+      return;
+
+    const relPath = path.join(dirPath, fileName);
     const stats = fs.statSync(path.join(rootPath, relPath));
 
     const isDirectory = stats.isDirectory();
     const dbItem = new FileSystem( {
-      name: item,
+      name: fileName,
       isDirectory,
       path: '/' + relPath,
       parentId,
       size: isDirectory ? null : stats.size,
-      mimeType: isDirectory ? null : mime.lookup(item),
+      mimeType: isDirectory ? null : mime.lookup(fileName),
     } );
 
     await dbItem.save().catch(err => console.error({err}));
@@ -74,6 +50,6 @@ async function updateFileSystemInDB(rootPath = FS_ROOT, dirPath = '', parentId =
 
 module.exports = {
   FS_ROOT,
-  getFullTree,
   updateFileSystemInDB,
+  indexIgnore,
 };

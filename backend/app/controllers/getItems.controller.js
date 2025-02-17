@@ -1,6 +1,6 @@
 const FileSystem = require("../models/FileSystem.model");
 
-const { getFullTree } = require('../services/fs');
+// const { getFullTree } = require('../services/fs');
 
 const getItems = async (req, res) => {
   // #swagger.summary = 'Get all items (files & folders)'
