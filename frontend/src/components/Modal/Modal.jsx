@@ -19,6 +19,17 @@ const Modal = ({
     }
   };
 
+  // Close modal when clicked outside of it
+  const onClick = (event) => {
+    const $dialog = modalRef.current;
+    const rect = $dialog.getBoundingClientRect();
+    const isInDialog = rect.top <= event.clientY && event.clientY <= rect.bottom &&
+                      rect.left <= event.clientX && event.clientX <= rect.right;
+    if (!isInDialog) {
+      setShow(false);
+    }
+  }
+
   useEffect(() => {
     if (show) {
       modalRef.current.showModal();
@@ -27,12 +38,14 @@ const Modal = ({
     }
   }, [show]);
 
+
   return (
     <dialog
       ref={modalRef}
       className={`fm-modal dialog`}
       style={{ width: dialogWidth }}
       onKeyDown={handleKeyDown}
+      onClick={onClick}
     >
       <div className="fm-modal-header">
         <span className="fm-modal-heading">{heading}</span>
