@@ -56,7 +56,8 @@ const FileManager = ({
   };
 
   return (
-    <main className="file-explorer" onContextMenu={(e) => e.preventDefault()} style={customStyles}>
+    <main className="file-explorer" onContextMenu={(e) => e.preventDefault()} style={customStyles}
+        onDragEnter={(e) => triggerAction.show("uploadFile") }>
       <Loader loading={isLoading} />
       <FilesProvider filesData={files} onError={onError}>
         <FileNavigationProvider initialPath={initialPath}>
