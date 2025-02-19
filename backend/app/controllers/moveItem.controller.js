@@ -69,8 +69,7 @@ const moveItem = async (req, res) => {
         }
 
         const destFullPath = path.join(
-          __dirname,
-          "../../public/uploads",
+          FS_ROOT,
           destinationFolder.path,
           sourceItem.name
         );

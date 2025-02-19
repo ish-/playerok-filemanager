@@ -54,7 +54,7 @@ const copyItem = async (req, res) => {
     let destinationFolder = { path: '' };
     if (!isRootDestination) {
       destinationFolder = await FileSystem.findById(destinationId);
-      console.log({destinationFolder});
+      // console.log({destinationFolder});
       if (!destinationFolder)
         throw new Error(`Wrong destinationId: ${ destinationId }`);
     }
@@ -95,8 +95,7 @@ const copyItem = async (req, res) => {
         await recursiveCopy(sourceItem, null); // Destination Folder -> Root Folder
       } else {
         const destFullPath = path.join(
-          __dirname,
-          "../../public/uploads",
+          FS_ROOT,
           destinationFolder.path,
           sourceItem.name
         );
