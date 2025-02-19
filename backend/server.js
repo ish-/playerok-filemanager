@@ -24,13 +24,15 @@ async function init () {
   await refreshDB();
 
   // CORS setup
-  app.use(cors({ origin: process.env.CLIENT_URI }));
+  // app.use(cors({ origin: process.env.CLIENT_URI }));
+  app.use(cors({ origin: '*' }));
 
   // Middlewares to parse URL-encoded body & JSON
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
 
   // Routes
+  app.use('/api/file-system/preview', express.static(FS_ROOT));
   app.use("/api/file-system", fileSystemRoutes);
 
   // Swagger documentation
@@ -38,7 +40,6 @@ async function init () {
 
   // Static files serving
   app.use(express.static(FRONTEND_ROOT));
-  app.use('/preview', express.static(FS_ROOT));
   app.get('*', (req, res) => {
     res.sendFile(path.join(FRONTEND_ROOT, 'index.html'));
   });
